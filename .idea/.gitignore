@@ -20,3 +20,5 @@ pip-selfcheck.json
 /misc.xml
 /modules.xml
 /vcs.xml
+/dictionaries
+/inspectionProfiles
