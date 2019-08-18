@@ -1,0 +1,8 @@
+Code: Segment Tree
+prioritized_replay_buffer.py
+segment_tree.py
+
+from: https://github.com/openai/baselines/blob/master/baselines/deepq/replay_buffer.py
+
+Add sum tree replay-from DDPG paper implementation.
+
