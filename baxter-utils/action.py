@@ -1,3 +1,7 @@
+"""
+Baxter arm actions: includes random selection of joint angles or incremental [-.1, 0, 1] movements.
+"""
+
 import random
 import numpy as np
 
@@ -111,6 +115,12 @@ class Action(object):
                          'left_e1': action[6]}
         return self.left_arm
 
-# actions = Action()
-# actions.left_action()
-# actions.right_action()
+    def right_home_position(self):
+        self.right_arm = {'right_s0': 0.08, 'right_s1': -1.00, 'right_w0': -0.67,
+                          'right_w1': 1.03, 'right_w2': 0.50, 'right_e0': 1.18, 'right_e1': 1.94}
+        return self.right_arm
+
+    def left_home_position(self):
+        self.left_arm = {'left_s0': -0.08, 'left_s1': -1.00, 'left_w0': 0.67,
+                         'left_w1': 1.03, 'left_w2': -0.50, 'left_e0': -1.18, 'left_e1': 1.94}
+        return self.left_arm
