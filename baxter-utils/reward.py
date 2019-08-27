@@ -20,8 +20,20 @@ class Reward (object):
         self.goal = np.asarray(goal)
 
     def update_gripper(self, gripper):
+        # for use after moving the gripper, to provide a more current position.
         self.gripper_pos = np.asarray(gripper.get("position"))
 
     def euclidean_distance(self):
+        # uses numpy euclidean distance, (more efficient than scipy implementation)
         distance = np.linalg.norm(self.gripper_pos - self.goal)
-        return distance
+        done = self.is_done(distance)
+        return distance, done
+
+    @classmethod
+    def is_done(cls, distance):
+        # needs a more robust solution for doneness, this is just temp for development
+        if distance < 0.02:
+            done = True
+        else:
+            done = False
+        return done
