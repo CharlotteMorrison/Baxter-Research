@@ -2,10 +2,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class Critic(nn.Module):
-    """Implements a pair of Critic neural networks."""
     def __init__(self, state_dim, action_dim):
-        super(Critic, self).__init()
+        """Implements a pair of Critic neural networks."""
+        super(Critic, self).__init__()
 
         # Critic network 1
         self.layer1 = nn.Linear(state_dim + action_dim, 400)

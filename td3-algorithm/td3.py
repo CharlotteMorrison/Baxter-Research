@@ -12,12 +12,9 @@ class TD3(object):
     Args:
         state_dim (int): state size
         action_dim (int): action size
-        # TODO: create a list for joint actions
         max_action (list): highest action to take
-        # TODO: find the max actions for each joint
         device (device): cuda or cpu to process the tensors
         env (env): gym environment to use
-        # TODO: convert to baxter environment
     """
 
     def __init__(self, state_dim, action_dim, max_action, device, env):
