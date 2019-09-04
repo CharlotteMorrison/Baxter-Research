@@ -18,6 +18,7 @@ class TD3(object):
     """
 
     def __init__(self, state_dim, action_dim, max_action, device, env):
+
         self.device = device
         self.actor = Actor(state_dim, action_dim, max_action).to(device)
         self.actor_target = Actor(state_dim, action_dim, max_action).to(device)
@@ -37,7 +38,7 @@ class TD3(object):
 
             Args:
                 state (array): current state of environment
-                noise (float): how much noise to add to acitons
+                noise (float): how much noise to add to actions
 
             Returns:
                 action (float): action clipped within action range

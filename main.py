@@ -1,20 +1,38 @@
-env = gym.make(ENV)
+import torch
+import numpy as np
+from baxter_init import Baxter
+
+# Configuration variables
+from replay_buffer import ReplayBuffer
+from step import Step
+from td3 import TD3
+
+SEED = 0
+
+# initialize the baxter environment
+baxter = Baxter()
+
+# set arms at neutral position
+baxter.neutral()
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Set seeds
-env.seed(SEED)
 torch.manual_seed(SEED)
 np.random.seed(SEED)
 
-state_dim = env.observation_space.shape[0]
-action_dim = env.action_space.shape[0]
-max_action = float(env.action_space.high[0])
 
-policy = TD3(state_dim, action_dim, max_action, env)
+state_dim = baxter.observation_space()
+
+action_dim = baxter.action_space()
+
+max_action = state_dim[1]
+
+policy = TD3(state_dim, action_dim, baxter)
 
 replay_buffer = ReplayBuffer()
 
-runner = Runner(env, policy, replay_buffer)
+step = Step(baxter, policy, replay_buffer)
 
 total_timesteps = 0
 timesteps_since_eval = 0

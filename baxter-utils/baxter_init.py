@@ -4,6 +4,7 @@ import baxter_interface
 from action import Action
 import block_sample
 from reward import Reward
+import numpy as np
 
 
 class Baxter(object):
@@ -76,3 +77,11 @@ class Baxter(object):
         block_sample.delete_gazebo_models()
         self.neutral()
         quit()
+
+    def observation_space(self):
+        low = np.array([-1.7016, -2.147, -3.0541, -.05, -3.059, -1.5707, -3.059])
+        high = np.array([1.7016, 1.047, 3.0541, 2.618, 3.059, 2.094, 3.059])
+        return [low, high]
+
+    def action_space(self):
+        return [[-0.1, 0, 0.1]]
