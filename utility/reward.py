@@ -27,7 +27,7 @@ class Reward (object):
         # uses numpy euclidean distance, (more efficient than scipy implementation)
         distance = np.linalg.norm(self.gripper_pos - self.goal)
         done = self.is_done(distance)
-        return distance, done
+        return distance
 
     @classmethod
     def is_done(cls, distance):

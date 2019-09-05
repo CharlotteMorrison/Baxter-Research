@@ -35,37 +35,44 @@ class Baxter(object):
         self.limb_right.move_to_joint_positions(self.action.right_home_position())
         self.limb_left.move_to_joint_positions(self.action.left_home_position())
 
-    def right_step(self):
-        # get an incremental update to the joint positions.
-        right_pos = self.action.right_incr_action()
+    def step(self, side):
+        if side == "right":
+            start_pos = self.right_state()
+            # get an incremental update to the joint positions.
+            right_pos = self.action.right_incr_action()
 
-        # move the joints to the new positions.
-        self.limb_right.move_to_joint_positions(right_pos)
+            # move the joints to the new positions.
+            self.limb_right.move_to_joint_positions(right_pos)
 
-        # update current state of robot
-        self.action.action_update(self.right_state(), self.left_state())
+            # update current state of robot
+            self.action.action_update(self.right_state(), self.left_state())
 
-        # get the endpoint pose for reward calculation
-        self.right_reward.update_gripper(self.limb_right.endpoint_pose())
+            # get the endpoint pose for reward calculation
+            self.right_reward.update_gripper(self.limb_right.endpoint_pose())
+            reward = self.right_reward.euclidean_distance()
+            done = self.right_reward.is_done(reward)
+            # get the rewards and status
+            return start_pos, right_pos, reward, done
+        if side == "left":
+            start_pos = self.right_state()
+            # get an incremental update to the joint positions.
+            left_pos = self.action.left_incr_action()
 
-        # get the rewards and status
-        return right_pos, self.right_reward.euclidean_distance()
+            # move the joints to the new positions.
+            self.limb_left.move_to_joint_positions(left_pos)
 
-    def left_step(self):
-        # get an incremental update to the joint positions.
-        left_pos = self.action.left_incr_action()
+            # update current state of robot
+            self.action.action_update(self.right_state(), self.left_state())
 
-        # move the joints to the new positions.
-        self.limb_left.move_to_joint_positions(left_pos)
+            # get the endpoint pose for reward of robot
+            self.left_reward.update_gripper(self.limb_left.endpoint_pose())
 
-        # update current state of robot
-        self.action.action_update(self.right_state(), self.left_state())
-
-        # get the endpoint pose for reward of robot
-        self.left_reward.update_gripper(self.limb_left.endpoint_pose())
-
-        # return the reward and status
-        return left_pos, self.left_reward.euclidean_distance()
+            reward = self.left_reward.euclidean_distance()
+            done = self.left_reward.is_done(reward)
+            # return the reward and status
+            return start_pos, left_pos, reward, done
+        else:
+            return "Incorrect parameter:left or right"
 
     def right_state(self):
         # returns an array of the current joint angles
@@ -84,6 +91,28 @@ class Baxter(object):
         low = np.array([-1.7016, -2.147, -3.0541, -.05, -3.059, -1.5707, -3.059])
         high = np.array([1.7016, 1.047, 3.0541, 2.618, 3.059, 2.094, 3.059])
         return [low, high]
+# total number of possible states
 
     def action_space(self):
-        return [[-0.1, 0, 0.1]]
+        return [[-0.1, 0, 0.1], [-0.1, 0, 0.1], [-0.1, 0, 0.1], [-0.1, 0, 0.1], [-0.1, 0, 0.1], [-0.1, 0, 0.1],
+                [-0.1, 0, 0.1]]
+        # return [-0.1, 0, 0.1]
+
+    def action_domain(self):
+        low = -0.1
+        # TODO may want to change this, add in a bigger value like .2
+        none = 0.0
+        high = 0.1
+        return low, none, high
+
+    def reset(self, arm):
+        self.neutral()
+        if arm == "right":
+            state = self.right_state()
+        elif arm == "left":
+            state = self.left_state()
+        else:
+            print "non-valid arm parameter: enter 'left' or 'right'"
+        state_list = list(state.values())
+        return state_list
+

@@ -1,11 +1,11 @@
 import sys
 import numpy as np
 from torch.utils.tensorboard import SummaryWriter
+from step import Step
 
-import step
 
-
-def train(agent, env, REWARD_THRESH, BATCH_SIZE, GAMMA, TAU, NOISE, NOISE_CLIP, POLICY_FREQUENCY, EXPLORATION, replay_buffer):
+def train(agent, env, REWARD_THRESH, BATCH_SIZE, GAMMA, TAU, NOISE, NOISE_CLIP, POLICY_FREQUENCY, EXPLORATION,
+          replay_buffer, step, arm):
     """Train the agent for exploration steps
 
         Args:
@@ -19,12 +19,12 @@ def train(agent, env, REWARD_THRESH, BATCH_SIZE, GAMMA, TAU, NOISE, NOISE_CLIP, 
     episode_reward = 0
     episode_timesteps = 0
     done = False
-    obs = env.reset()
+    obs = env.reset(arm)
     evaluations = []
     rewards = []
     best_avg = -2000
 
-    writer = SummaryWriter(comment="-TD3_Baseline_HalfCheetah")
+    writer = SummaryWriter(comment="-TD3_Baxter")
 
     while total_timesteps < EXPLORATION:
 

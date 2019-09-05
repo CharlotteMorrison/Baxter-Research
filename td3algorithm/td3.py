@@ -49,9 +49,12 @@ class TD3(object):
 
         action = self.actor(state).cpu().data.numpy().flatten()
         if noise != 0:
-            action = (action + np.random.normal(0, noise, size=self.env.action_space.shape[0]))
+            action_dim = len(self.env.action_space())
+            action = (action + np.random.normal(0, noise, size=action_dim))
 
-        return action.clip(self.env.action_space.low, self.env.action_space.high)
+        action_space_low, _, action_space_high = self.env.action_domain()
+
+        return action.clip(action_space_low, action_space_high)
 
     def train(self, replay_buffer, iterations, batch_size=100, discount=0.99, tau=0.005, policy_noise=0.2,
               noise_clip=0.5, policy_freq=2):

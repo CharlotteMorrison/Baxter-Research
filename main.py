@@ -1,12 +1,14 @@
 import numpy as np
 import torch
-from baxter_init import Baxter
-from evaluate_policy import evaluate_policy
-from observe import observe
-from replay_buffer import ReplayBuffer
-from step import Step
-from td3 import TD3
-from train import train
+
+from utility.baxter_init import Baxter
+from td3algorithm.evaluate_policy import evaluate_policy
+from td3algorithm.observe import observe
+from td3algorithm.replay_buffer import ReplayBuffer
+from td3algorithm.step import Step
+from td3algorithm.td3 import TD3
+from td3algorithm.train import train
+
 
 if __name__ == '__main__':
     SEED = 0
@@ -34,16 +36,16 @@ if __name__ == '__main__':
     np.random.seed(SEED)
 
     state_dim = baxter.observation_space()
+    state_dim = len(state_dim[1])
+    action_dim = len(baxter.action_space())
 
-    action_dim = baxter.action_space()
+    max_action = baxter.observation_space()
 
-    max_action = state_dim[1]
-
-    policy = TD3(state_dim, action_dim, baxter)
+    policy = TD3(state_dim, action_dim, max_action[1], device, baxter)
 
     replay_buffer = ReplayBuffer()
 
-    step = Step(baxter, policy, replay_buffer)
+    step = Step(baxter, policy, replay_buffer, "left")
 
     total_timesteps = 0
     timesteps_since_eval = 0
@@ -51,10 +53,11 @@ if __name__ == '__main__':
     done = True
 
     # Populate replay buffer
-    observe(baxter, replay_buffer, OBSERVATION)
+    # observe(baxter, replay_buffer, OBSERVATION)
 
     # Train agent
-    train(policy, baxter, REWARD_THRESH, BATCH_SIZE, GAMMA, TAU, NOISE, NOISE_CLIP, POLICY_FREQUENCY, EXPLORATION, replay_buffer)
+    train(policy, baxter, REWARD_THRESH, BATCH_SIZE, GAMMA, TAU, NOISE, NOISE_CLIP, POLICY_FREQUENCY, EXPLORATION,
+          replay_buffer, step, "left")
 
     policy.load()
 

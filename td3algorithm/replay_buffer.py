@@ -3,7 +3,7 @@ import numpy as np
 
 
 class ReplayBuffer(object):
-    def __init__(self, size):
+    def __init__(self, size=1000000):
         """Create Replay buffer.
         Parameters
         ----------
