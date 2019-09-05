@@ -1,10 +1,12 @@
 """ Creates an instance of baxter with both left and right limbs"""
-import rospy
-import baxter_interface
-from action import Action
-import block_sample
-from reward import Reward
 import numpy as np
+
+import baxter_interface
+import rospy
+
+import block_sample
+from action import Action
+from reward import Reward
 
 
 class Baxter(object):

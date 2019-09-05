@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class Actor(nn.module):
+class Actor(nn.Module):
     def __init__(self, state_dim, action_dim, max_action):
         """Create the Actor neural network layers."""
         super(Actor, self).__init__()
