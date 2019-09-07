@@ -24,7 +24,7 @@ def train(agent, env, REWARD_THRESH, BATCH_SIZE, GAMMA, TAU, NOISE, NOISE_CLIP, 
     rewards = []
     best_avg = -2000
 
-    writer = SummaryWriter(comment="-TD3_Baxter")
+    writer = SummaryWriter(comment="TD3_Baxter")
 
     while total_timesteps < EXPLORATION:
 

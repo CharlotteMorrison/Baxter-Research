@@ -28,7 +28,7 @@ class Step:
         self.obs = next_state
 
         if done:
-            self.obs = self.env.reset()
+            self.obs = self.env.reset(self.arm)
             done = False
 
             return reward, True

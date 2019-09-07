@@ -15,7 +15,8 @@ class Actor(nn.Module):
 
     def forward(self, x):
         """Forward pass in Actor neural network."""
-        x = F.relu(self.layer1(x))
+        x = F.relu(self.layer1(x.float()))
         x = F.relu(self.layer2(x))
-        x = self.max_action.double() * torch.tanh(self.layer3(x).double())
+        print x.dtype
+        x = self.max_action * torch.tanh(self.layer3(x))
         return x

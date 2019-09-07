@@ -26,13 +26,16 @@ class Reward (object):
     def euclidean_distance(self):
         # uses numpy euclidean distance, (more efficient than scipy implementation)
         distance = np.linalg.norm(self.gripper_pos - self.goal)
+        # distance from object is subtracted from arm diameter
+        # furthest possible distance-not feasible farthest possible
+        distance = 2.04 - distance
         done = self.is_done(distance)
         return distance
 
     @classmethod
     def is_done(cls, distance):
         # needs a more robust solution for doneness, this is just temp for development
-        if distance < 0.02:
+        if distance > 1.3:
             done = True
         else:
             done = False

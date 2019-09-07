@@ -26,6 +26,7 @@ class Baxter(object):
         self.neutral()
 
         # initialize the reward with goal location, param 2 is block location in sample
+        # TODO add a 2nd block, have each hand work towards their own goal.
         # TODO use input from robot vision to get goal position
         self.right_reward = Reward(self.limb_right.endpoint_pose(), (0.6725, 0.1265, 0.7825))
         self.left_reward = Reward(self. limb_left.endpoint_pose(), (0.6725, 0.1265, 0.7825))
@@ -70,6 +71,7 @@ class Baxter(object):
             reward = self.left_reward.euclidean_distance()
             done = self.left_reward.is_done(reward)
             # return the reward and status
+            print reward
             return start_pos, left_pos, reward, done
         else:
             return "Incorrect parameter:left or right"

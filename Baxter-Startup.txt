@@ -1,0 +1,32 @@
+To Launch the Baxter Simulator in Gazebo, use the following commands:
+    In a new terminal window start roscore:
+        roscore
+    In a new terminal window launch Gazebo simulator:
+        cd ros_ws
+        ./baxter.sh sim
+        roslaunch baxter_gazebo baxter_world.launch
+    In yet another new terminal window enable the robot and joint trajectory server:
+        cd ros_ws
+        ./baxter.sh sim
+        rosrun baxter_tools enable_robot.py -e
+        rosrun baxter_interface joint_trajectory_action_server.py
+    In another terminal, you can run commands- like tuck arms:
+        cd ros_ws
+        ./baxter.sh sim
+        rosrun baxter_tools tuck_arms.py -u
+
+To run a python program using baxter, must use the Baxter prompt:
+        cd ros_ws
+        ./baxter.sh sim
+        (then run any python file)
+        *may need to add the following to project interpreter paths
+            home/charlotte/ros_ws/devel/lib/python2.7/dist-packages
+            opt/ros/kinetic/lib/python2.7/dist-packages
+
+TO kill all processes after shutting down
+
+    killall gzserver
+
+
+
+http://wiki.ros.org/kinetic/Installation/Ubuntu
