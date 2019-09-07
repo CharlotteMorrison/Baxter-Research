@@ -7,6 +7,7 @@ import rospy
 import block_sample
 from action import Action
 from reward import Reward
+import random
 
 
 class Baxter(object):
@@ -36,11 +37,11 @@ class Baxter(object):
         self.limb_right.move_to_joint_positions(self.action.right_home_position())
         self.limb_left.move_to_joint_positions(self.action.left_home_position())
 
-    def step(self, side):
+    def step(self, side, action):
         if side == "right":
             start_pos = self.right_state()
             # get an incremental update to the joint positions.
-            right_pos = self.action.right_incr_action()
+            right_pos = self.action.right_param_action(action)
 
             # move the joints to the new positions.
             self.limb_right.move_to_joint_positions(right_pos)
@@ -55,9 +56,9 @@ class Baxter(object):
             # get the rewards and status
             return start_pos, right_pos, reward, done
         if side == "left":
-            start_pos = self.right_state()
+            start_pos = self.left_state()
             # get an incremental update to the joint positions.
-            left_pos = self.action.left_incr_action()
+            left_pos = self.action.left_param_action(action)
 
             # move the joints to the new positions.
             self.limb_left.move_to_joint_positions(left_pos)
@@ -75,6 +76,50 @@ class Baxter(object):
             return start_pos, left_pos, reward, done
         else:
             return "Incorrect parameter:left or right"
+
+    def random_step_left(self):
+        values = self.observation_space()
+        min_val = values[0]
+        max_val = values[1]
+        init_arm_pos = self.left_state()
+        item = 0
+        new_arm_pos = init_arm_pos
+        actions = []
+        for i in range(7):
+            actions.append(random.uniform(min_val[item], max_val[item]))
+        for key, value in new_arm_pos.iteritems():
+            new_arm_pos[key] = actions[item]
+            item += 1
+
+        self.limb_left.move_to_joint_positions(new_arm_pos)
+        self.action.action_update(self.right_state(), self.left_state())
+        self.left_reward.update_gripper(self.limb_left.endpoint_pose())
+
+        reward = self.left_reward.euclidean_distance()
+        done = self.left_reward.is_done(reward)
+        return init_arm_pos, new_arm_pos, actions, reward, done
+
+    def random_step_right(self):
+        values = self.observation_space()
+        min_val = values[0]
+        max_val = values[1]
+        init_arm_pos = self.right_state()
+        item = 0
+        new_arm_pos = init_arm_pos
+        actions = []
+        for i in range(7):
+            actions.append(random.uniform(min_val[item], max_val[item]))
+        for key, value in new_arm_pos.iteritems():
+            new_arm_pos[key] = actions[item]
+            item += 1
+
+        self.limb_right.move_to_joint_positions(new_arm_pos)
+        self.action.action_update(self.right_state(), self.left_state())
+        self.right_reward.update_gripper(self.limb_right.endpoint_pose())
+
+        reward = self.right_reward.euclidean_distance()
+        done = self.right_reward.is_done(reward)
+        return init_arm_pos, new_arm_pos, actions, reward, done
 
     def right_state(self):
         # returns an array of the current joint angles

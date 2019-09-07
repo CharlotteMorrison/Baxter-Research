@@ -75,8 +75,7 @@ class Action(object):
         for key, value in self.right_arm.iteritems():
             updated_right_arm[key] = value + action[item]
             item += 1
-
-        return updated_right_arm
+        return action, updated_right_arm
 
     def left_incr_action(self):
         # creates a dictionary with random values for each joint position
@@ -88,6 +87,26 @@ class Action(object):
             updated_left_arm[key] = value + action[item]
             item += 1
 
+        return action, updated_left_arm
+
+    def right_param_action(self, action):
+        # action: set of actions to apply to joint
+        # creates a dictionary of updated joint positions
+        updated_right_arm = {}
+        item = 0
+        for key, value in self.right_arm.iteritems():
+            updated_right_arm[key] = value + action[item]
+            item += 1
+        return updated_right_arm
+
+    def left_param_action(self, action):
+        # action: set of actions to apply to joint
+        # creates a dictionary of updated joint positions
+        updated_left_arm = {}
+        item = 0
+        for key, value in self.left_arm.iteritems():
+            updated_left_arm[key] = value + action[item]
+            item += 1
         return updated_left_arm
 
 # The functions below may be deleted or combined with the incr versions for simplicity at a later date.

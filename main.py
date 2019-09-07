@@ -39,9 +39,9 @@ if __name__ == '__main__':
     state_dim = len(state_dim[1])
     action_dim = len(baxter.action_space())
 
-    max_action = baxter.observation_space()
+    action = baxter.observation_space()
 
-    policy = TD3(state_dim, action_dim, max_action[1], device, baxter)
+    policy = TD3(state_dim, action_dim, action, device, baxter)
 
     replay_buffer = ReplayBuffer()
 
@@ -53,7 +53,7 @@ if __name__ == '__main__':
     done = True
 
     # Populate replay buffer
-    # observe(baxter, replay_buffer, OBSERVATION)
+    observe(baxter, replay_buffer, OBSERVATION, "left")
 
     # Train agent
     train(policy, baxter, REWARD_THRESH, BATCH_SIZE, GAMMA, TAU, NOISE, NOISE_CLIP, POLICY_FREQUENCY, EXPLORATION,

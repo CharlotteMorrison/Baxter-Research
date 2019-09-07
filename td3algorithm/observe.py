@@ -1,7 +1,7 @@
 import sys
 
 
-def observe(env, replay_buffer, observation_steps):
+def observe(env, replay_buffer, observation_steps, arm):
     """run episodes while taking random actions and filling replay_buffer
 
         Args:
@@ -16,12 +16,13 @@ def observe(env, replay_buffer, observation_steps):
     done = False
 
     while time_steps < observation_steps:
-        action = env.action_space.sample()
-        new_obs, reward, done, _ = env.step(action)
-
+        if arm == "left":
+            obs, new_obs, action, reward, done = env.random_step_left()
+        else:
+            obs, new_obs, action, reward, done = env.random_step_left()
         replay_buffer.add((obs, new_obs, action, reward, done))
 
-        obs = new_obs
+        # obs = new_obs
         time_steps += 1
 
         if done:

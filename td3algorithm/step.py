@@ -18,7 +18,7 @@ class Step:
         action = self.agent.select_action(np.array(self.obs), noise=0.1)
 
         # Perform action
-        raw_state, raw_next_state, reward, done = self.env.step(self.arm)
+        raw_state, raw_next_state, reward, done = self.env.step(self.arm, action)
         done_bool = 0 if episode_timesteps + 1 == self.observation_steps else float(done)
         state = list(raw_state.values())
         next_state = list(raw_next_state.values())

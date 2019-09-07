@@ -2,11 +2,11 @@ from matplotlib import pyplot as plt
 from IPython.display import clear_output
 
 
-def subplot(R, P, Q, S):
-    r = list(zip(*R))
-    p = list(zip(*P))
-    q = list(zip(*Q))
-    s = list(zip(*S))
+def subplot(reward, policy_loss, q_loss, max_steps):
+    r = list(zip(*reward))
+    p = list(zip(*policy_loss))
+    q = list(zip(*q_loss))
+    s = list(zip(*max_steps))
     clear_output(wait=True)
 
     fig, ax = plt.subplots(nrows=2, ncols=2, figsize=(15, 15))

@@ -12,16 +12,17 @@ class TD3(object):
     Args:
         state_dim (int): state size
         action_dim (int): action size
-        max_action (list): highest action to take
+        action (list): highest/lowest action to take
         device (device): cuda or cpu to process the tensors
         env (env): gym environment to use
     """
 
-    def __init__(self, state_dim, action_dim, max_action, device, env):
+    def __init__(self, state_dim, action_dim, action, device, env):
 
+        self.max_action = action[1]
         self.device = device
-        self.actor = Actor(state_dim, action_dim, max_action).to(device)
-        self.actor_target = Actor(state_dim, action_dim, max_action).to(device)
+        self.actor = Actor(state_dim, action_dim, self.max_action).to(device)
+        self.actor_target = Actor(state_dim, action_dim, self.max_action).to(device)
         self.actor_target.load_state_dict(self.actor.state_dict())
         self.actor_optimizer = torch.optim.Adam(self.actor.parameters(), lr=1e-3)
 
@@ -30,7 +31,6 @@ class TD3(object):
         self.critic_target.load_state_dict(self.critic.state_dict())
         self.critic_optimizer = torch.optim.Adam(self.critic.parameters(), lr=1e-3)
 
-        self.max_action = max_action
         self.env = env
 
     def select_action(self, state, noise=0.1):
@@ -89,8 +89,15 @@ class TD3(object):
             # Select action according to policy and add clipped noise
             noise = torch.FloatTensor(u).data.normal_(0, policy_noise).to(self.device)
             noise = noise.clamp(-noise_clip, noise_clip)
-            # train requires double, update to use float for better GPU processing
-            next_action = (self.actor_target(next_state.double()) + noise).clamp(-self.max_action, self.max_action)
+
+            # .clamp can only be used for single values.
+            # next_action = (self.actor_target(next_state.double()) + noise).clamp(-self.max_action, self.max_action)
+
+            min_action = action[0]
+            max_action = action[1]
+            noise_action = (self.actor_target(next_state.double()) + noise)
+
+            next_action = torch.max(torch.min(noise_action, max_action), min_action)
 
             # Compute the target Q value
             target_q1, target_q2 = self.critic_target(next_state, next_action)
@@ -101,6 +108,7 @@ class TD3(object):
             current_q1, current_q2 = self.critic(state, action)
 
             # Compute critic loss
+            # there is a size mismatch, due to line 105 above, need to correct later.
             critic_loss = F.mse_loss(current_q1, target_q) + F.mse_loss(current_q2, target_q)
 
             # Optimize the critic
@@ -111,7 +119,7 @@ class TD3(object):
             # Delayed policy updates
             if it % policy_freq == 0:
                 # Compute actor loss
-                actor_loss = -self.critic.Q1(state, self.actor(state)).mean()
+                actor_loss = -self.critic.get_q(state, self.actor(state)).mean()
 
                 # Optimize the actor
                 self.actor_optimizer.zero_grad()
