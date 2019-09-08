@@ -78,17 +78,16 @@ class Baxter(object):
             return "Incorrect parameter:left or right"
 
     def random_step_left(self):
-        values = self.observation_space()
-        min_val = values[0]
-        max_val = values[1]
         init_arm_pos = self.left_state()
         item = 0
         new_arm_pos = init_arm_pos
-        actions = []
+        value = [-0.1, 0, 0.1]
+        arm_update_value = []
         for i in range(7):
-            actions.append(random.uniform(min_val[item], max_val[item]))
+            arm_update_value.append(random.choice(value))
         for key, value in new_arm_pos.iteritems():
-            new_arm_pos[key] = actions[item]
+            # sets new arm position to initial position + a random value
+            new_arm_pos[key] = init_arm_pos[key] + arm_update_value[item]
             item += 1
 
         self.limb_left.move_to_joint_positions(new_arm_pos)
@@ -97,20 +96,19 @@ class Baxter(object):
 
         reward = self.left_reward.euclidean_distance()
         done = self.left_reward.is_done(reward)
-        return init_arm_pos, new_arm_pos, actions, reward, done
+        return init_arm_pos, new_arm_pos, arm_update_value, reward, done
 
     def random_step_right(self):
-        values = self.observation_space()
-        min_val = values[0]
-        max_val = values[1]
         init_arm_pos = self.right_state()
         item = 0
         new_arm_pos = init_arm_pos
-        actions = []
+        value = [-0.1, 0, 0.1]
+        arm_update_value = []
         for i in range(7):
-            actions.append(random.uniform(min_val[item], max_val[item]))
+            arm_update_value.append(random.choice(value))
         for key, value in new_arm_pos.iteritems():
-            new_arm_pos[key] = actions[item]
+            # sets new arm position to initial position + a random value
+            new_arm_pos[key] = init_arm_pos[key] + arm_update_value[item]
             item += 1
 
         self.limb_right.move_to_joint_positions(new_arm_pos)
@@ -119,7 +117,7 @@ class Baxter(object):
 
         reward = self.right_reward.euclidean_distance()
         done = self.right_reward.is_done(reward)
-        return init_arm_pos, new_arm_pos, actions, reward, done
+        return init_arm_pos, new_arm_pos, arm_update_value, reward, done
 
     def right_state(self):
         # returns an array of the current joint angles
