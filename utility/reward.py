@@ -35,7 +35,7 @@ class Reward (object):
     @classmethod
     def is_done(cls, distance):
         # needs a more robust solution for doneness, this is just temp for development
-        if distance > 1.35:
+        if distance > 1.7:
             done = True
         else:
             done = False

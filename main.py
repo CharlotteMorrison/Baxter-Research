@@ -5,15 +5,15 @@ from utility.baxter_init import Baxter
 from td3algorithm.evaluate_policy import evaluate_policy
 from td3algorithm.observe import observe
 from td3algorithm.replay_buffer import ReplayBuffer
-from td3algorithm.step import Step
+from td3algorithm.next_step import NextStep
 from td3algorithm.td3 import TD3
 from td3algorithm.train import train
 
 
 if __name__ == '__main__':
     SEED = 0
-    OBSERVATION = 10000
-    EXPLORATION = 5000000
+    OBSERVATION = 100  # 10000
+    EXPLORATION = 5000  # 5000000
     BATCH_SIZE = 100
     GAMMA = 0.99
     TAU = 0.005
@@ -22,7 +22,7 @@ if __name__ == '__main__':
     EXPLORE_NOISE = 0.1
     POLICY_FREQUENCY = 2
     EVAL_FREQUENCY = 5000
-    REWARD_THRESH = 8000
+    REWARD_THRESH = 1.95  # 8000
     # initialize the baxter environment
     baxter = Baxter()
 
@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     replay_buffer = ReplayBuffer()
 
-    step = Step(baxter, policy, replay_buffer, "left")
+    step = NextStep(baxter, policy, replay_buffer, "left")
 
     total_timesteps = 0
     timesteps_since_eval = 0
@@ -62,6 +62,6 @@ if __name__ == '__main__':
     policy.load()
 
     for i in range(100):
-        evaluate_policy(policy, baxter, render=False)
+        evaluate_policy(policy, baxter)
 
     baxter.close_env()

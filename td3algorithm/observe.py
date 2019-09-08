@@ -5,9 +5,10 @@ def observe(env, replay_buffer, observation_steps, arm):
     """run episodes while taking random actions and filling replay_buffer
 
         Args:
-            env (env): gym environment
-            replay_buffer(ReplayBuffer): buffer to store experience replay
-            observation_steps (int): how many steps to observe for
+            :param env: (env): gym environment
+            :param replay_buffer: (ReplayBuffer): buffer to store experience replay
+            :param observation_steps: (int): how many steps to observe for
+            :param arm: (string): right or left for arm
 
     """
 

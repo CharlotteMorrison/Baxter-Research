@@ -2,7 +2,7 @@ import numpy as np
 import torch
 
 
-class Step:
+class NextStep:
     """Carries out the environment steps and adds experiences to memory"""
 
     def __init__(self, env, agent, replay_buffer, arm):
@@ -18,7 +18,10 @@ class Step:
         action = self.agent.select_action(np.array(self.obs), noise=0.1)
 
         # Perform action
-        raw_state, raw_next_state, reward, done = self.env.step(self.arm, action)
+        if self.arm == "left":
+            raw_state, raw_next_state, reward, done = self.env.step_left(action)
+        else:
+            raw_state, raw_next_state, reward, done = self.env.right_left(action)
         done_bool = 0 if episode_timesteps + 1 == self.observation_steps else float(done)
         state = list(raw_state.values())
         next_state = list(raw_next_state.values())

@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 from torch.utils.tensorboard import SummaryWriter
-from step import Step
+from next_step import NextStep
 
 
 def train(agent, env, REWARD_THRESH, BATCH_SIZE, GAMMA, TAU, NOISE, NOISE_CLIP, POLICY_FREQUENCY, EXPLORATION,
