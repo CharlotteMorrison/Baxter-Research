@@ -2,6 +2,7 @@ import sys
 import numpy as np
 from torch.utils.tensorboard import SummaryWriter
 from next_step import NextStep
+from subplot import reward_subplot
 
 
 def train(agent, env, REWARD_THRESH, BATCH_SIZE, GAMMA, TAU, NOISE, NOISE_CLIP, POLICY_FREQUENCY, EXPLORATION,
@@ -23,6 +24,11 @@ def train(agent, env, REWARD_THRESH, BATCH_SIZE, GAMMA, TAU, NOISE, NOISE_CLIP, 
     evaluations = []
     rewards = []
     best_avg = -2000
+
+    # plot lists
+    plot_avg_reward = []
+    plot_episode_reward = []
+    plot_max_timesteps =[]
 
     writer = SummaryWriter(comment="TD3_Baxter")
 
@@ -47,23 +53,17 @@ def train(agent, env, REWARD_THRESH, BATCH_SIZE, GAMMA, TAU, NOISE, NOISE_CLIP, 
                     total_timesteps, episode_num, episode_reward, avg_reward))
                 sys.stdout.flush()
 
+                # plot the reward values
+                plot_avg_reward.append([avg_reward, episode_num + 1])
+                plot_episode_reward.append([episode_reward, episode_num + 1])
+                plot_max_timesteps.append([total_timesteps, episode_num + 1])
+                reward_subplot(plot_avg_reward, plot_episode_reward, plot_max_timesteps)
+
                 if avg_reward >= REWARD_THRESH:
                     break
 
                 agent.train(replay_buffer, episode_timesteps, BATCH_SIZE, GAMMA, TAU, NOISE, NOISE_CLIP,
                             POLICY_FREQUENCY)
-
-                # Evaluate episode
-                #                 if timesteps_since_eval >= EVAL_FREQUENCY:
-                #                     timesteps_since_eval %= EVAL_FREQUENCY
-                #                     eval_reward = evaluate_policy(agent, test_env)
-                #                     evaluations.append(avg_reward)
-                #                     writer.add_scalar("eval_reward", eval_reward, total_timesteps)
-
-                #                     if best_avg < eval_reward:
-                #                         best_avg = eval_reward
-                #                         print("saving best model....\n")
-                #                         agent.save("best_avg","saves")
 
                 episode_reward = 0
                 episode_timesteps = 0

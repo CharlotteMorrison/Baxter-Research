@@ -80,7 +80,7 @@ class Baxter(object):
             reward = self.left_reward.euclidean_distance()
             done = self.left_reward.is_done(reward)
             # return the reward and status
-            print reward
+            # print reward
             return start_pos, left_pos, reward, done
         else:
             return "Incorrect parameter:left or right"
@@ -102,7 +102,7 @@ class Baxter(object):
         reward = self.left_reward.euclidean_distance()
         done = self.left_reward.is_done(reward)
         # return the reward and status
-        print reward
+        # print reward
         return start_pos, left_pos, reward, done
 
     def step_right(self, action):

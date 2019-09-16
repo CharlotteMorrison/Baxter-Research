@@ -21,7 +21,7 @@ if __name__ == '__main__':
     NOISE_CLIP = 0.5
     EXPLORE_NOISE = 0.1
     POLICY_FREQUENCY = 2
-    EVAL_FREQUENCY = 5000
+    EVAL_FREQUENCY = 50  # 5000
     REWARD_THRESH = 1.95  # 8000
     # initialize the baxter environment
     baxter = Baxter()
