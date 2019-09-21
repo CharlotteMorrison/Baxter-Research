@@ -45,46 +45,6 @@ class Baxter(object):
         # set the arms to a neutral position
         self.limb_right.move_to_joint_positions(self.action.right_home_position())
 
-    def step(self, side, action):
-        if side == "right":
-            start_pos = self.right_state()
-            # get an incremental update to the joint positions.
-            right_pos = self.action.right_param_action(action)
-
-            # move the joints to the new positions.
-            self.limb_right.move_to_joint_positions(right_pos)
-
-            # update current state of robot
-            self.action.action_update(self.right_state(), self.left_state())
-
-            # get the endpoint pose for reward calculation
-            self.right_reward.update_gripper(self.limb_right.endpoint_pose())
-            reward = self.right_reward.euclidean_distance()
-            done = self.right_reward.is_done(reward)
-            # get the rewards and status
-            return start_pos, right_pos, reward, done
-        if side == "left":
-            start_pos = self.left_state()
-            # get an incremental update to the joint positions.
-            left_pos = self.action.left_param_action(action)
-
-            # move the joints to the new positions.
-            self.limb_left.move_to_joint_positions(left_pos)
-
-            # update current state of robot
-            self.action.action_update(self.right_state(), self.left_state())
-
-            # get the endpoint pose for reward of robot
-            self.left_reward.update_gripper(self.limb_left.endpoint_pose())
-
-            reward = self.left_reward.euclidean_distance()
-            done = self.left_reward.is_done(reward)
-            # return the reward and status
-            # print reward
-            return start_pos, left_pos, reward, done
-        else:
-            return "Incorrect parameter:left or right"
-
     def step_left(self, action):
         start_pos = self.left_state()
         # get an incremental update to the joint positions.
