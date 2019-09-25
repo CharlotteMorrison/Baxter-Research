@@ -19,8 +19,9 @@ def observe(env, replay_buffer, observation_steps, arm):
     while time_steps < observation_steps:
         if arm == "left":
             obs, new_obs, action, reward, done = env.random_step_left()
+            print
         else:
-            obs, new_obs, action, reward, done = env.random_step_left()
+            obs, new_obs, action, reward, done = env.random_step_right()
         replay_buffer.add(obs, new_obs, action, reward, done)
 
         # obs = new_obs
@@ -30,5 +31,8 @@ def observe(env, replay_buffer, observation_steps, arm):
             obs = env.reset(arm)
             done = False
 
+        # if time_steps % 10 == 0:
         print("\rPopulating Buffer {}/{}.".format(time_steps, observation_steps))
         sys.stdout.flush()
+        # print("\rWriting Buffer: obs {}, new obs {}, action {}, reward {}, done {}".format
+        # (obs, new_obs, action, reward, done))

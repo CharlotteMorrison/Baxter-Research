@@ -10,8 +10,19 @@ def train(agent, env, REWARD_THRESH, BATCH_SIZE, GAMMA, TAU, NOISE, NOISE_CLIP, 
     """Train the agent for exploration steps
 
         Args:
-            agent (Agent): agent to use
-            env (environment): gym environment
+            :param step: (NextStep)  move to the next step
+            :param replay_buffer: (ReplayBuffer) replay buffer for arm
+            :param EXPLORATION: (int) number of exploration times
+            :param POLICY_FREQUENCY: (int)
+            :param NOISE_CLIP: (float) clip value for noise
+            :param NOISE: (float) noise
+            :param TAU: (float): learning rate decay
+            :param GAMMA:  (float): discount rate
+            :param BATCH_SIZE:  (int): replay memory batch size
+            :param agent: (Agent): agent to use
+            :param env: (environment): gym environment
+            :param REWARD_THRESH: (float): reward threshold
+            :param arm: (string): "left" or "right"
     """
 
     total_timesteps = 0
@@ -31,12 +42,14 @@ def train(agent, env, REWARD_THRESH, BATCH_SIZE, GAMMA, TAU, NOISE, NOISE_CLIP, 
     plot_max_timesteps =[]
 
     writer = SummaryWriter(comment="TD3_Baxter")
+    print("Running Train")
 
     while total_timesteps < EXPLORATION:
-
+        print("Train 1/while")
         if done:
-
+            print("Train if done")
             if total_timesteps != 0:
+                print("Train if not zero")
                 rewards.append(episode_reward)
                 avg_reward = np.mean(rewards[-100:])
 
@@ -45,6 +58,7 @@ def train(agent, env, REWARD_THRESH, BATCH_SIZE, GAMMA, TAU, NOISE, NOISE_CLIP, 
                 writer.add_scalar("episode_reward", episode_reward, total_timesteps)
 
                 if best_avg < avg_reward:
+                    print("If best avg")
                     best_avg = avg_reward
                     print("saving best model....\n")
                     agent.save("best_avg", "saves")

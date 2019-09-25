@@ -12,7 +12,7 @@ class NextStep:
         self.obs = env.reset(arm)
         self.done = False
         self.arm = arm
-        self.observation_steps = 50  # 200
+        self.observation_steps = 20  # 200
 
     def next_step(self, episode_timesteps, noise=0.1):
         action = self.agent.select_action(np.array(self.obs), noise=0.1)

@@ -12,7 +12,7 @@ from td3algorithm.train import train
 
 if __name__ == '__main__':
     SEED = 0
-    OBSERVATION = 1000  # 10000
+    OBSERVATION = 100  # 10000
     EXPLORATION = 10000  # 5000000
     BATCH_SIZE = 100
     GAMMA = 0.99
@@ -22,7 +22,7 @@ if __name__ == '__main__':
     EXPLORE_NOISE = 0.1
     POLICY_FREQUENCY = 2
     EVAL_FREQUENCY = 500  # 5000
-    REWARD_THRESH = 1.95  # 8000
+    REWARD_THRESH = 1.0  # 1.95  # 8000
     # initialize the baxter environment
     baxter = Baxter()
 
