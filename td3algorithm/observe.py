@@ -14,6 +14,7 @@ def observe(env, replay_buffer, observation_steps, arm):
     """
     time_steps = 0
     env.reset(arm)
+    buffer_storage = []
 
     # chooses the correct arm action, default left
     obs = env.left_state()
@@ -29,7 +30,6 @@ def observe(env, replay_buffer, observation_steps, arm):
         else:
             new_obs, action, reward, done = env.random_step_right()
 
-        print(reward)
         # print out observation
         # print("\rWriting Buffer: obs {}, new obs {}, action {}, reward {}, done {}".format(obs, new_obs, action, reward, done))
 
@@ -37,8 +37,12 @@ def observe(env, replay_buffer, observation_steps, arm):
         replay_buffer.add(obs, new_obs, action, reward, done)
 
         # save the observations, for testing , remove later after testing
-        save_buffer = open("/home/charlotte/PycharmProjects/Baxter/td3algorithm/temp/buffer.pkl", "ab+")
-        pickle.dump((obs, new_obs, action, reward, done), save_buffer)
+        buffer_storage.append([obs, new_obs, action, reward, done])
+        if time_steps % 25 == 0:
+            save_buffer = open("/home/charlotte/PycharmProjects/Baxter/td3algorithm/temp/buffer.pkl", "wb")
+            pickle.dump(buffer_storage, save_buffer)
+            save_buffer.close()
+            print("buffer updated")
 
         # set the current observation to the new observation
         obs = new_obs

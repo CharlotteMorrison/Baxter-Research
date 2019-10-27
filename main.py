@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+import cPickle as pickle
 
 from utility.baxter_init import Baxter
 from td3algorithm.evaluate_policy import evaluate_policy
@@ -13,16 +14,7 @@ from td3algorithm.train import train
 if __name__ == '__main__':
     SEED = 0
     OBSERVATION = 10000
-    EXPLORATION = 5000000
-    BATCH_SIZE = 100
-    GAMMA = 0.99
-    TAU = 0.005
-    NOISE = 0.2
-    NOISE_CLIP = 0.5
     EXPLORE_NOISE = 0.1
-    POLICY_FREQUENCY = 2
-    EVAL_FREQUENCY = 5000
-    REWARD_THRESH = 11.95  # 8000
     # initialize the baxter environment
     baxter = Baxter()
 
@@ -52,14 +44,27 @@ if __name__ == '__main__':
     episode_num = 0
     done = True
 
+    # store and load the initial replay values
     # once replay buffer is full, use the pre-made one to populate observe step
+    replay_counter = 0
+    try:
+        pk_file = open("/home/charlotte/PycharmProjects/Baxter/td3algorithm/temp/buffer.pkl", "rb")
+        data = pickle.load(pk_file)
 
-    # Populate replay buffer
-    observe(baxter, replay_buffer, OBSERVATION, "left")
+        for test in data:
+            replay_buffer.add(test[0], test[1], test[2], test[3], test[4])
+            replay_counter += 1
+    except EOFError:
+        pass
+
+    if OBSERVATION > replay_counter:
+        observe(baxter, replay_buffer, OBSERVATION - replay_counter, "left")
+
+    # Populate replay buffer normally
+    # observe(baxter, replay_buffer, OBSERVATION, "left")
 
     # Train agent
-    train(policy, baxter, REWARD_THRESH, BATCH_SIZE, GAMMA, TAU, NOISE, NOISE_CLIP, POLICY_FREQUENCY, EXPLORATION,
-          replay_buffer, step, "left")
+    train(policy, baxter, replay_buffer, step, "left")
 
     policy.load()
 
