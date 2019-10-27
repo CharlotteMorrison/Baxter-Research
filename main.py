@@ -12,8 +12,8 @@ from td3algorithm.train import train
 
 if __name__ == '__main__':
     SEED = 0
-    OBSERVATION = 100  # 10000
-    EXPLORATION = 10000  # 5000000
+    OBSERVATION = 10000
+    EXPLORATION = 5000000
     BATCH_SIZE = 100
     GAMMA = 0.99
     TAU = 0.005
@@ -21,8 +21,8 @@ if __name__ == '__main__':
     NOISE_CLIP = 0.5
     EXPLORE_NOISE = 0.1
     POLICY_FREQUENCY = 2
-    EVAL_FREQUENCY = 500  # 5000
-    REWARD_THRESH = 1.0  # 1.95  # 8000
+    EVAL_FREQUENCY = 5000
+    REWARD_THRESH = 11.95  # 8000
     # initialize the baxter environment
     baxter = Baxter()
 
@@ -51,6 +51,8 @@ if __name__ == '__main__':
     timesteps_since_eval = 0
     episode_num = 0
     done = True
+
+    # once replay buffer is full, use the pre-made one to populate observe step
 
     # Populate replay buffer
     observe(baxter, replay_buffer, OBSERVATION, "left")

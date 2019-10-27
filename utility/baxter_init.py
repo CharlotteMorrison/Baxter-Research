@@ -102,7 +102,7 @@ class Baxter(object):
 
         reward = self.left_reward.euclidean_distance()
         done = self.left_reward.is_done(reward)
-        return init_arm_pos, new_arm_pos, arm_update_value, reward, done
+        return new_arm_pos, arm_update_value, reward, done
 
     def random_step_right(self):
         init_arm_pos = self.right_state()
@@ -123,7 +123,7 @@ class Baxter(object):
 
         reward = self.right_reward.euclidean_distance()
         done = self.right_reward.is_done(reward)
-        return init_arm_pos, new_arm_pos, arm_update_value, reward, done
+        return new_arm_pos, arm_update_value, reward, done
 
     def right_state(self):
         # returns an array of the current joint angles

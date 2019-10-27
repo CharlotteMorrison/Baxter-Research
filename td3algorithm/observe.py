@@ -1,4 +1,5 @@
 import sys
+import cPickle as pickle
 
 
 def observe(env, replay_buffer, observation_steps, arm):
@@ -11,28 +12,46 @@ def observe(env, replay_buffer, observation_steps, arm):
             :param arm: (string): right or left for arm
 
     """
-
     time_steps = 0
-    obs = env.reset(arm)
-    done = False
+    env.reset(arm)
+
+    # chooses the correct arm action, default left
+    obs = env.left_state()
+    if arm == "right":
+        obs = env.right_state()
 
     while time_steps < observation_steps:
+        # gets the new observation
+        # deal with the scope issue, this is janky... find a better way later.
+        new_obs, action, reward, done = [None, None, 0.0, False]
         if arm == "left":
-            obs, new_obs, action, reward, done = env.random_step_left()
-            print
+            new_obs, action, reward, done = env.random_step_left()
         else:
-            obs, new_obs, action, reward, done = env.random_step_right()
+            new_obs, action, reward, done = env.random_step_right()
+
+        print(reward)
+        # print out observation
+        # print("\rWriting Buffer: obs {}, new obs {}, action {}, reward {}, done {}".format(obs, new_obs, action, reward, done))
+
+        # add the observation to the replay buffer
         replay_buffer.add(obs, new_obs, action, reward, done)
 
-        # obs = new_obs
+        # save the observations, for testing , remove later after testing
+        save_buffer = open("/home/charlotte/PycharmProjects/Baxter/td3algorithm/temp/buffer.pkl", "ab+")
+        pickle.dump((obs, new_obs, action, reward, done), save_buffer)
+
+        # set the current observation to the new observation
+        obs = new_obs
         time_steps += 1
 
+        # if finished, reset the arm and get the reset state
         if done:
-            obs = env.reset(arm)
-            done = False
+            env.reset(arm)
+            if arm == "left":
+                obs = env.left_state()
+            else:
+                obs = env.right_state()
 
-        # if time_steps % 10 == 0:
-        print("\rPopulating Buffer {}/{}.".format(time_steps, observation_steps))
+        if time_steps % 100 == 0:
+            print("\rPopulating Buffer {}/{}.".format(time_steps, observation_steps))
         sys.stdout.flush()
-        # print("\rWriting Buffer: obs {}, new obs {}, action {}, reward {}, done {}".format
-        # (obs, new_obs, action, reward, done))
