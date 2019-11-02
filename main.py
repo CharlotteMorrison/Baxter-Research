@@ -44,24 +44,7 @@ if __name__ == '__main__':
     episode_num = 0
     done = True
 
-    # store and load the initial replay values
-    # once replay buffer is full, use the pre-made one to populate observe step
-    replay_counter = 0
-    try:
-        pk_file = open("/home/charlotte/PycharmProjects/Baxter/td3algorithm/temp/buffer.pkl", "rb")
-        data = pickle.load(pk_file)
-
-        for test in data:
-            replay_buffer.add(test[0], test[1], test[2], test[3], test[4])
-            replay_counter += 1
-    except EOFError:
-        pass
-
-    if OBSERVATION > replay_counter:
-        observe(baxter, replay_buffer, OBSERVATION - replay_counter, "left")
-
-    # Populate replay buffer normally
-    # observe(baxter, replay_buffer, OBSERVATION, "left")
+    observe(baxter, replay_buffer, OBSERVATION, "left")
 
     # Train agent
     train(policy, baxter, replay_buffer, step, "left")

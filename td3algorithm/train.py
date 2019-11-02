@@ -2,7 +2,7 @@ import sys
 import numpy as np
 from torch.utils.tensorboard import SummaryWriter
 
-from subplot import reward_subplot
+from subplot import Subplot
 
 
 def train(agent, env, replay_buffer, step, arm):
@@ -34,6 +34,8 @@ def train(agent, env, replay_buffer, step, arm):
     best_avg = -2000
 
     writer = SummaryWriter(comment="TD3_Baxter")
+    avg_reward_plot = Subplot()
+    best_reward_plot = Subplot()
 
     while total_timesteps < EXPLORATION:
         if done:
@@ -42,6 +44,10 @@ def train(agent, env, replay_buffer, step, arm):
                 avg_reward = np.mean(rewards[-100:])
 
                 print(avg_reward, best_avg)
+
+                # graph the average/best rewards
+                avg_reward_plot.reward_subplot(avg_reward, "Current_Average_Reward")
+                best_reward_plot.reward_subplot(best_avg, "Best_Average_Reward")
 
                 writer.add_scalar("avg_reward", avg_reward, total_timesteps)
                 writer.add_scalar("reward_step", reward, total_timesteps)
@@ -77,3 +83,4 @@ def train(agent, env, replay_buffer, step, arm):
         episode_timesteps += 1
         total_timesteps += 1
         timesteps_since_eval += 1
+        print("Total Timesteps: " + str(total_timesteps) + "   Reward: " + str(reward) + "   Done: " + str(done))

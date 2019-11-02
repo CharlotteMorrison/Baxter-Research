@@ -22,7 +22,7 @@ class NextStep:
             raw_state, raw_next_state, reward, done = self.env.step_left(action)
         else:
             raw_state, raw_next_state, reward, done = self.env.right_left(action)
-        done_bool = 0 if episode_timesteps + 1 == self.observation_steps else float(done)
+        done_bool = True if episode_timesteps + 1 == self.observation_steps else float(done)
         state = list(raw_state.values())
         next_state = list(raw_next_state.values())
         # Store data in replay buffer
