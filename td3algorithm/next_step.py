@@ -12,19 +12,26 @@ class NextStep:
         self.obs = env.reset(arm)
         self.done = False
         self.arm = arm
-        self.observation_steps = 200  # 200
+        self.observation_steps = 10  # 200, need to change average to match in train.py
 
     def next_step(self, episode_timesteps, noise=0.1):
-        action = self.agent.select_action(np.array(self.obs), noise=0.1)
+        action = self.agent.select_action(np.array(self.obs))
+        print(action)
 
         # Perform action
         if self.arm == "left":
             raw_state, raw_next_state, reward, done = self.env.step_left(action)
         else:
             raw_state, raw_next_state, reward, done = self.env.right_left(action)
-        done_bool = True if episode_timesteps + 1 == self.observation_steps else float(done)
+
+        if episode_timesteps + 1 == self.observation_steps:
+            done_bool = 0
+            done = True
+        else:
+            done_bool = float(done)
         state = list(raw_state.values())
         next_state = list(raw_next_state.values())
+
         # Store data in replay buffer
         self.replay_buffer.add(state, next_state, action, reward, done_bool)
 

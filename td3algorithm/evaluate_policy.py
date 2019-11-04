@@ -1,12 +1,13 @@
 import numpy as np
 
 
-def evaluate_policy(policy, env, eval_episodes=100):
+def evaluate_policy(policy, env, arm, eval_episodes=100):
     """run several episodes using the best agent policy
 
         Args:
             policy (agent): agent to evaluate
             env (env): gym environment
+            arm (string): left or right
             eval_episodes (int): how many test episodes to run
 
         Returns:
@@ -16,11 +17,9 @@ def evaluate_policy(policy, env, eval_episodes=100):
 
     avg_reward = 0.
     for i in range(eval_episodes):
-        obs = env.reset()
+        obs = env.reset(arm)
         done = False
         while not done:
-            # if render:
-                # env.render()
             action = policy.select_action(np.array(obs), noise=0)
             obs, reward, done, _ = env.step(action)
             avg_reward += reward

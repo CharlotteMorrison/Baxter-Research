@@ -23,4 +23,4 @@ Prioritized experience replay- See Overleaf article summary.
 1. [TD3 Algorithm Code](https://towardsdatascience.com/td3-learning-to-run-with-ai-40dfc512f93) from Towards Data Science implementation of Addressing function approximation error in actor-critic methods.
 2. [OpenAI Gym, Replay Buffer and Priority Replay Buffer](https://github.com/openai/baselines/blob/master/baselines/deepq/replay_buffer.py) 
 3. [ROS Robotics by Example](https://dl.acm.org/citation.cfm?id=3200107) Baxter reference for ROS including: joint angles,... (download the book)[https://drive.google.com/open?id=11UpOH1fZd1qhXr9i8tEyVa1g4NVmL-me]
-
+4. [TD3 Implementation](https://arxiv.org/abs/1802.09477) Used for TD3 algorithm implementation.

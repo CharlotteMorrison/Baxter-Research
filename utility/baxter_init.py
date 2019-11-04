@@ -146,7 +146,6 @@ class Baxter(object):
     def action_space(self):
         return [[-0.1, 0, 0.1], [-0.1, 0, 0.1], [-0.1, 0, 0.1], [-0.1, 0, 0.1], [-0.1, 0, 0.1], [-0.1, 0, 0.1],
                 [-0.1, 0, 0.1]]
-        # return [-0.1, 0, 0.1]
 
     def action_domain(self):
         low = -0.1
@@ -163,6 +162,7 @@ class Baxter(object):
             state = self.left_state()
         else:
             print "non-valid arm parameter: enter 'left' or 'right'"
+            state = []
         state_list = list(state.values())
         return state_list
 

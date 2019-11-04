@@ -16,12 +16,6 @@ def train(agent, env, replay_buffer, step, arm):
             :param arm: (string): "left" or "right"
     """
     EXPLORATION = 5000000
-    BATCH_SIZE = 100
-    GAMMA = 0.99
-    TAU = 0.005
-    NOISE = 0.2
-    NOISE_CLIP = 0.5
-    POLICY_FREQUENCY = 2
     REWARD_THRESH = 1.95  # 8000
 
     total_timesteps = 0
@@ -31,7 +25,7 @@ def train(agent, env, replay_buffer, step, arm):
     episode_timesteps = 0
     done = False
     rewards = []
-    best_avg = -2000
+    best_avg = -2
 
     writer = SummaryWriter(comment="TD3_Baxter")
     avg_reward_plot = Subplot()
@@ -40,10 +34,8 @@ def train(agent, env, replay_buffer, step, arm):
     while total_timesteps < EXPLORATION:
         if done:
             if total_timesteps != 0:
-                rewards.append(episode_reward)
-                avg_reward = np.mean(rewards[-100:])
-
-                print(avg_reward, best_avg)
+                rewards.append(episode_reward/episode_timesteps)
+                avg_reward = np.mean(rewards[-10:])
 
                 # graph the average/best rewards
                 avg_reward_plot.reward_subplot(avg_reward, "Current_Average_Reward")
@@ -53,6 +45,7 @@ def train(agent, env, replay_buffer, step, arm):
                 writer.add_scalar("reward_step", reward, total_timesteps)
                 writer.add_scalar("episode_reward", episode_reward, total_timesteps)
 
+                print("Average reward: " + str(avg_reward) + "  Best Reward: " + str(best_avg))
                 if best_avg < avg_reward:
                     best_avg = avg_reward
                     print("saving best model....\n")
@@ -66,8 +59,7 @@ def train(agent, env, replay_buffer, step, arm):
                     break
 
                 # trains with the TD3 function
-                agent.train(replay_buffer, episode_timesteps, BATCH_SIZE, GAMMA, TAU, NOISE, NOISE_CLIP,
-                            POLICY_FREQUENCY)
+                agent.train(replay_buffer)
 
                 # reset the values for a new episode, increment number of episodes
                 episode_reward = 0
