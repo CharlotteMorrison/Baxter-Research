@@ -45,7 +45,7 @@ def train(agent, env, replay_buffer, step, arm):
                 writer.add_scalar("reward_step", reward, total_timesteps)
                 writer.add_scalar("episode_reward", episode_reward, total_timesteps)
 
-                print("Average reward: " + str(avg_reward) + "  Best Reward: " + str(best_avg))
+                # print("Average reward: " + str(avg_reward) + "  Best Reward: " + str(best_avg))
                 if best_avg < avg_reward:
                     best_avg = avg_reward
                     print("saving best model....\n")

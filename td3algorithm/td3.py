@@ -12,8 +12,8 @@ class TD3(object):
     and provides outputs as actions.
 
     Args:
-        state_dim (int): state size
-        action_dim (int): action size
+        state_dim (array): state size
+        action_dim (array): action size
         policy_noise (float): how much noise to add to actions
         device (device): cuda or cpu to process the tensors
         discount (float): discount factor
@@ -53,13 +53,11 @@ class TD3(object):
 
     def select_action(self, state):
         """Select an appropriate action from the agent policy
-
             Args:
                 state (array): current state of environment
 
             Returns:
                 action (float): action clipped within action range
-
         """
 
         state = torch.FloatTensor(state.reshape(1, -1)).to(self.device)
@@ -74,34 +72,38 @@ class TD3(object):
 
     def train(self, replay_buffer, batch_size=100):
         """Train and update actor and critic networks
-
             Args:
                 replay_buffer (ReplayBuffer): buffer for experience replay
                 batch_size(int): batch size to sample from replay buffer
-
             Return:
                 actor_loss (float): loss from actor network
                 critic_loss (float): loss from critic network
-
         """
         self.total_it += 1
         # Sample replay buffer
         state, next_state, action, reward, done = replay_buffer.sample(batch_size)
 
-        state = np.array([np.array(i.item().values()) for i in state])
-        state_t = torch.from_numpy(state)
+        state = torch.tensor(np.array([np.array(i.item().values()) for i in state]))
         next_state = np.asarray([np.array(i.item().values()) for i in next_state])
+        reward = torch.as_tensor(reward, dtype=torch.float32)
+        done = torch.as_tensor(done, dtype=torch.float32)
 
         with torch.no_grad():
             # select an action according to the policy an add clipped noise
             # need to select set of actions
-            noise = (torch.rand_like(torch.from_numpy(action)) * self.policy_noise).clamp(-self.noise_clip, self.noise_clip)
-            next_action = (self.actor_target(torch.tensor(next_state, dtype=torch.float32)) + noise).clamp(-self.max_action, self.max_action)
+            noise = (torch.rand_like(torch.from_numpy(action)) *
+                     self.policy_noise).clamp(-self.noise_clip, self.noise_clip)
 
+            next_action = (self.actor_target(torch.tensor(next_state, dtype=torch.float32)) +
+                           torch.tensor(noise, dtype=torch.float32)).clamp(self.max_action[0], self.max_action[2])
+            # next_action_d =torch.as_tensor(next_action, dtype=torch.double)
             # Compute the target Q value
             target_Q1, target_Q2 = self.critic(state, next_action)
             target_Q = torch. min(target_Q1, target_Q2)
             target_Q = reward + done * self.discount * target_Q
+
+        # update action datatype, can't do earlier, use np.array earlier
+        action = torch.as_tensor(action, dtype=torch.float32)
 
         # get current Q estimates
         current_Q1, current_Q2 = self.critic(state, action)
@@ -117,12 +119,12 @@ class TD3(object):
         # delayed policy updates
         if self.total_it % self.policy_freq == 0:
             # compute the actor loss
-            actor_loss = -self.critic.Q1(state, self.actor(state)).mean()
+            actor_loss = -self.critic.get_q(state, self.actor(state)).mean()
 
             # optimize the actor
             self.actor_optimizer.zero_grad()
             actor_loss.backward()
-            self.actor.step()
+            self.actor_optimizer.step()
 
             # Update the frozen target models
             for param, target_param in zip(self.critic.parameters(), self.critic_target.parameters()):

@@ -20,6 +20,7 @@ class Critic(nn.Module):
 
     def forward(self, x, u):
         """Returns the Q values for both Critic networks"""
+        x = x.float()
         xu = torch.cat([x, u], 1)
 
         # Critic network 1 forward
@@ -36,6 +37,7 @@ class Critic(nn.Module):
 
     def get_q(self, x, u):
         """Returns the Q value for only Critic 1"""
+        x = x.float()
         xu = torch.cat([x, u], 1)
 
         # Critic network 1 forward

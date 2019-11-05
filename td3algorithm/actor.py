@@ -17,6 +17,7 @@ class Actor(nn.Module):
 
     def forward(self, x):
         """Forward pass in Actor neural network."""
+        x = x.float()
         x = F.relu(self.layer1(x))
         x = F.relu(self.layer2(x))
         # tanh is the hyperbolic tangent function that keeps the network from getting stuck
