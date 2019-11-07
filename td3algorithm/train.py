@@ -75,4 +75,4 @@ def train(agent, env, replay_buffer, step, arm):
         episode_timesteps += 1
         total_timesteps += 1
         timesteps_since_eval += 1
-        print("Total Timesteps: " + str(total_timesteps) + "   Reward: " + str(reward) + "   Done: " + str(done))
+        # print("Total Timesteps: " + str(total_timesteps) + "   Reward: " + str(reward) + "   Done: " + str(done))

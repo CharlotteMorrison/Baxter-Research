@@ -83,7 +83,8 @@ class TD3(object):
         # Sample replay buffer
         state, next_state, action, reward, done = replay_buffer.sample(batch_size)
 
-        state = torch.tensor(np.array([np.array(i.item().values()) for i in state]))
+        state = torch.from_numpy(np.asarray([np.array(i.item().values()) for i in state]))
+
         next_state = np.asarray([np.array(i.item().values()) for i in next_state])
         reward = torch.as_tensor(reward, dtype=torch.float32)
         done = torch.as_tensor(done, dtype=torch.float32)
@@ -99,7 +100,7 @@ class TD3(object):
             # next_action_d =torch.as_tensor(next_action, dtype=torch.double)
             # Compute the target Q value
             target_Q1, target_Q2 = self.critic(state, next_action)
-            target_Q = torch. min(target_Q1, target_Q2)
+            target_Q = torch.min(target_Q1, target_Q2)
             target_Q = reward + done * self.discount * target_Q
 
         # update action datatype, can't do earlier, use np.array earlier
@@ -109,7 +110,9 @@ class TD3(object):
         current_Q1, current_Q2 = self.critic(state, action)
 
         # compute critic loss
-        critic_loss = F.mse_loss(current_Q1, target_Q) + F.mse_loss(current_Q2, target_Q)
+        critic_loss = F.mse_loss(current_Q1, target_Q[:1, :].transpose(0, 1)) + F.mse_loss(current_Q2,
+                                                                                           target_Q[:1, :].transpose(0,
+                                                                                                                     1))
 
         # optimize the critic
         self.critic_optimizer.zero_grad()

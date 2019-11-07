@@ -16,7 +16,7 @@ class NextStep:
 
     def next_step(self, episode_timesteps, noise=0.1):
         action = self.agent.select_action(np.array(self.obs))
-        print(action)
+        # print(action)
 
         # Perform action
         if self.arm == "left":
@@ -33,7 +33,7 @@ class NextStep:
         next_state = list(raw_next_state.values())
 
         # Store data in replay buffer
-        self.replay_buffer.add(state, next_state, action, reward, done_bool)
+        self.replay_buffer.add(raw_state, raw_next_state, action, reward, done_bool)
 
         self.obs = next_state
 
@@ -44,3 +44,4 @@ class NextStep:
             return reward, True
 
         return reward, done
+
