@@ -12,11 +12,10 @@ class NextStep:
         self.obs = env.reset(arm)
         self.done = False
         self.arm = arm
-        self.observation_steps = 10  # 200, need to change average to match in train.py
+        self.observation_steps = 50  # 200, need to change average to match in train.py
 
     def next_step(self, episode_timesteps, noise=0.1):
         action = self.agent.select_action(np.array(self.obs))
-        # print(action)
 
         # Perform action
         if self.arm == "left":
@@ -38,7 +37,9 @@ class NextStep:
         self.obs = next_state
 
         if done:
-            self.obs = self.env.reset(self.arm)
+            # TODO change to random state
+            self.obs = self.env.reset_random(self.arm)
+            # moves arm to a random starting position
             self.done = False
 
             return reward, True

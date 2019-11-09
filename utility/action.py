@@ -12,6 +12,7 @@ Baxter arm actions: includes random selection of joint angles or incremental [-.
 # W0: wrist twist (roll)        -175.25     +175.25     350.5   |   -3.059      +3.059      6.117
 # W1: wrist bend (pitch)        -90         +120        210     |   -1.5707     +2.094      3.6647
 # W2: wrist twist (roll)        -175.25     +175.25     350.5   |   -3.059      +3.059      6.117
+import random
 
 
 class Action(object):
@@ -53,5 +54,26 @@ class Action(object):
     def left_home_position(self):
         self.left_arm = {'left_s0': -0.08, 'left_s1': -1.00, 'left_w0': 0.67,
                          'left_w1': 1.03, 'left_w2': -0.50, 'left_e0': -1.18, 'left_e1': 1.94}
+        return self.left_arm
+
+    # TODO optimize this random range for a smaller reset position
+    def right_random_position(self):
+        self.right_arm = {'right_s0': random.uniform(-1.7016, 1.7016),
+                          'right_s1': random.uniform(-2.147, 1.047),
+                          'right_w0': random.uniform(-3.0541, 3.0541),
+                          'right_w1': random.uniform(-.05, 2.618),
+                          'right_w2': random.uniform(-3.059, 3.059),
+                          'right_e0': random.uniform(-1.5707, 2.094),
+                          'right_e1': random.uniform(-3.059, 3.059)}
+        return self.right_arm
+
+    def left_random_position(self):
+        self.left_arm = {'left_s0': random.uniform(-1.7016, 1.7016),
+                         'left_s1': random.uniform(-2.147, 1.047),
+                         'left_w0': random.uniform(-3.0541, 3.0541),
+                         'left_w1': random.uniform(-.05, 2.618),
+                         'left_w2': random.uniform(-3.059, 3.059),
+                         'left_e0': random.uniform(-1.5707, 2.094),
+                         'left_e1': random.uniform(-3.059, 3.059)}
         return self.left_arm
 

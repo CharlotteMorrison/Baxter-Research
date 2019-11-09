@@ -16,7 +16,7 @@ def train(agent, env, replay_buffer, step, arm):
             :param arm: (string): "left" or "right"
     """
     EXPLORATION = 5000000
-    REWARD_THRESH = 1.95  # 8000
+    REWARD_THRESH = 1.95
 
     total_timesteps = 0
     timesteps_since_eval = 0
@@ -35,11 +35,7 @@ def train(agent, env, replay_buffer, step, arm):
         if done:
             if total_timesteps != 0:
                 rewards.append(episode_reward/episode_timesteps)
-                avg_reward = np.mean(rewards[-10:])
-
-                # graph the average/best rewards
-                avg_reward_plot.reward_subplot(avg_reward, "Current_Average_Reward")
-                best_reward_plot.reward_subplot(best_avg, "Best_Average_Reward")
+                avg_reward = np.mean(rewards[-50:])
 
                 writer.add_scalar("avg_reward", avg_reward, total_timesteps)
                 writer.add_scalar("reward_step", reward, total_timesteps)
@@ -51,6 +47,10 @@ def train(agent, env, replay_buffer, step, arm):
                     print("saving best model....\n")
                     agent.save("best_avg", "saves")
 
+                # graph the average/best rewards
+                avg_reward_plot.reward_subplot(avg_reward, "Current_Average_Reward")
+                best_reward_plot.reward_subplot(best_avg, "Best_Average_Reward")
+
                 print("\rTotal T: {:d} Episode Num: {:d} Reward: {:f} Avg Reward: {:f}".format(
                     total_timesteps, episode_num, episode_reward, avg_reward))
                 sys.stdout.flush()
@@ -59,7 +59,7 @@ def train(agent, env, replay_buffer, step, arm):
                     break
 
                 # trains with the TD3 function
-                agent.train(replay_buffer)
+                agent.train(replay_buffer, batch_size=50)
 
                 # reset the values for a new episode, increment number of episodes
                 episode_reward = 0

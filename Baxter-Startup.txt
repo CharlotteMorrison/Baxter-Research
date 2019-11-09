@@ -5,6 +5,8 @@ To Launch the Baxter Simulator in Gazebo, use the following commands:
         cd ros_ws
         ./baxter.sh sim
         roslaunch baxter_gazebo baxter_world.launch
+        (to run headless)
+        roslaunch baxter_gazebo baxter_world.launch headless:=true gui:=false
     In yet another new terminal window enable the robot and joint trajectory server:
         cd ros_ws
         ./baxter.sh sim

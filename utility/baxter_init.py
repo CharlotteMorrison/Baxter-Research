@@ -166,3 +166,21 @@ class Baxter(object):
         state_list = list(state.values())
         return state_list
 
+    def reset_random(self, arm):
+        if arm == "right":
+            self.limb_right.move_to_joint_positions(self.action.right_random_position())
+            state = self.right_state()
+        elif arm == "left":
+            self.limb_left.move_to_joint_positions(self.action.left_random_position())
+            state = self.left_state()
+        else:
+            print "non-valid arm parameter: enter 'left' or 'right'"
+            state = []
+        state_list = list(state.values())
+        return state_list
+
+    def random_start(self):
+        # set the arms to a random start position
+        self.limb_right.move_to_joint_positions(self.action.right_random_position())
+        self.limb_left.move_to_joint_positions(self.action.left_random_position())
+

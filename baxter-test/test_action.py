@@ -29,8 +29,8 @@ limb_left.move_to_joint_positions(action.left_home_position())
 
 for i in range(100):
     # get an incremental update to the joint positions.
-    right_pos = action.right_incr_action()
-    left_pos = action.left_incr_action()
+    right_pos = action.right_param_action([0., 0., 0., 0., 0., 0., 0.])
+    left_pos = action.left_param_action([0., 0., 0., 0., 0., 0., 0.])
 
     # move the joints to the new positions.
     limb_right.move_to_joint_positions(right_pos)
@@ -39,7 +39,7 @@ for i in range(100):
     # update the current joint angles (could do this by using the positions
     # concern, there may be variability with movement, especially if the robot is holding
     # a weighty object, might need to reconsider to speed up processing.
-    # TODO determine if getting updates significantly slows and if there is a difference between calculated angles
+    # DONE determine if getting updates significantly slows and if there is a difference between calculated angles
     action.action_update(limb_right.joint_angles(), limb_left.joint_angles())
 
     # get the endpoint pose for reward calculation

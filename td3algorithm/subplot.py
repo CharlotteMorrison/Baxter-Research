@@ -13,8 +13,8 @@ class Subplot(object):
     def reward_subplot(self, current_reward, title):
         self.reward_list.append(current_reward)
 
-        # show plot every 100 steps
-        if len(self.reward_list) % 10 == 0:
+        # TODO show plot every 100 steps
+        if len(self.reward_list) % 2 == 0:
 
             clear_output(wait=True)
             plt.plot(self.reward_list, linestyle='solid')
